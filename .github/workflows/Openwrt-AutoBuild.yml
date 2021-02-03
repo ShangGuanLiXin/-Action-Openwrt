@@ -1,0 +1,51 @@
+name: Openwrt-AutoBuild
+
+on:
+  #  release:
+  #    types: [published]
+#  push:
+#    branches:
+#      - master
+#    paths:
+#      - 'start'
+#  schedule:
+#    - cron: 0 20 */7 * *
+  watch:
+    types: [started]
+
+env:
+  RUN_VALIDATION: true
+
+jobs:
+  build:
+    runs-on:  ubuntu-18.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    name: Build ${{matrix.target}}
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [lean-x64] #lean-x64,lean-ipq40xx,lean-mt7621,lean-rockchip,lienol-x64
+
+    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#
+#      - name: Set Date
+#        run: |
+#          date=$(date +%Y-%m-%d)
+#          echo "DATE=$date" >> $GITHUB_ENV
+#
+#      - name: Initialization environment
+#        env:
+#          DEBIAN_FRONTEND: noninteractive
+#        run: |
+#          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+#          sudo -E apt-get -qq update
+#          sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-1804)
+#          sudo -E apt-get -qq autoremove --purge
+#          sudo -E apt-get -qq clean
+
+      - name: WeChat notification
+#        if: env.WECHAT_NOTIFICATION == 'true' && !cancelled() && steps.compile.outputs.status == 'success'
+        run: curl https://sc.ftqq.com/${{ secrets.SCKEY }}.send?text=${{matrix.target}}编译完成
